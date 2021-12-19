@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 
 	"github.com/m-mizutani/goerr"
 	"github.com/open-policy-agent/opa/rego"
@@ -12,7 +13,7 @@ type input struct {
 	Files []*RegoFile `json:"files"`
 }
 
-func evalWithFile(policyPath string, targets []*RegoFile) error {
+func evalWithFile(policyPath string, targets []*RegoFile, out io.Writer) error {
 	query := []func(*rego.Rego){
 		rego.Query(`data`),
 		rego.Input(input{Files: targets}),
@@ -59,7 +60,7 @@ func evalWithFile(policyPath string, targets []*RegoFile) error {
 	if len(fail) > 0 {
 		fmt.Println("Failed")
 		for _, f := range fail {
-			fmt.Println(f)
+			fmt.Fprintf(out, "%s\n", f)
 		}
 		return errEvalFailed
 	}

@@ -12,6 +12,7 @@ $ regolint -p ./lint ./policy
 ### Options
 
 - `-p, --policy`: lint policy file/dir
+- `-o, --output`: specify output file. If no policy file, output only parsed rego files. '-' means stdout
 
 ## Rule guide
 

@@ -1,6 +1,9 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"io"
 	"os"
 
 	"github.com/m-mizutani/goerr"
@@ -8,25 +11,15 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var logger *zlog.Logger
+var logger = zlog.New()
+
+const outputStdout = "-"
 
 type config struct {
-	policyFile string
-	opaURL     string
+	PolicyFile string
+	OutputFile string
 
-	logLevel string
-}
-
-func (x *config) isValid() error {
-	if x.policyFile == "" && x.opaURL == "" {
-		return goerr.Wrap(errInvalidConfig, "either one of --policy and --url is required")
-	}
-
-	if x.policyFile != "" && x.opaURL != "" {
-		return goerr.Wrap(errInvalidConfig, "only either one of --policy and --url is allowed")
-	}
-
-	return nil
+	LogLevel string
 }
 
 func Run(args []string) error {
@@ -41,34 +34,59 @@ func Run(args []string) error {
 				Aliases:     []string{"p"},
 				Usage:       "lint policy file/dir",
 				EnvVars:     []string{"REGOLINT_POLICY"},
-				Destination: &cfg.policyFile,
-				Required:    true,
+				Destination: &cfg.PolicyFile,
+			},
+			&cli.StringFlag{
+				Name:        "output",
+				Aliases:     []string{"o"},
+				Usage:       "specify output file. If no policy file, output only parsed rego files. '-' means stdout",
+				EnvVars:     []string{"REGOLINT_OUTPUT"},
+				Destination: &cfg.OutputFile,
+				Value:       outputStdout,
 			},
 
 			&cli.StringFlag{
 				Name:        "log-level",
 				Aliases:     []string{"l"},
 				Usage:       "Log level [trace|debug|info|warn|error]",
-				Destination: &cfg.logLevel,
+				Destination: &cfg.LogLevel,
 				Value:       "info",
 			},
 		},
 		Before: func(c *cli.Context) error {
-			logger = zlog.New(zlog.WithLogLevel(cfg.logLevel))
+			created, err := zlog.NewWithError(zlog.WithLogLevel(cfg.LogLevel))
+			if err != nil {
+				return err
+			}
+			logger = created
+			logger.With("config", cfg).Debug("starting regolint...")
 			return nil
 		},
 		Action: func(c *cli.Context) error {
-			if err := cfg.isValid(); err != nil {
-				return err
-			}
-
 			targets, err := loadDirs(c.Args().Slice()...)
 			if err != nil {
 				return err
 			}
 
-			if err := evalWithFile(cfg.policyFile, targets); err != nil {
-				return err
+			var output io.Writer = os.Stdout
+			if cfg.OutputFile != outputStdout {
+				f, err := os.Create(cfg.OutputFile)
+				if err != nil {
+					return goerr.Wrap(err)
+				}
+				output = f
+			}
+
+			if cfg.PolicyFile != "" {
+				if err := evalWithFile(cfg.PolicyFile, targets, output); err != nil {
+					return err
+				}
+			} else {
+				raw, err := json.MarshalIndent(targets, "", "  ")
+				if err != nil {
+					return goerr.Wrap(err)
+				}
+				fmt.Fprint(output, string(raw))
 			}
 
 			return nil
