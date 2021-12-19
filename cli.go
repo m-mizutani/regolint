@@ -39,7 +39,7 @@ func Run(args []string) error {
 			&cli.StringFlag{
 				Name:        "policy",
 				Aliases:     []string{"p"},
-				Usage:       "lint policy file",
+				Usage:       "lint policy file/dir",
 				EnvVars:     []string{"REGOLINT_POLICY"},
 				Destination: &cfg.policyFile,
 				Required:    true,

@@ -11,8 +11,7 @@ $ regolint -p ./lint ./policy
 
 ### Options
 
-- `-p, --policy`: policy file
-- `-u, --url`: policy server URL
+- `-p, --policy`: lint policy file/dir
 
 ## Rule guide
 
