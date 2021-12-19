@@ -32,14 +32,14 @@ func Run(args []string) error {
 			&cli.StringFlag{
 				Name:        "policy",
 				Aliases:     []string{"p"},
-				Usage:       "lint policy file/dir",
+				Usage:       "lint policy file/dir. If no policy file, output only parsed rego files",
 				EnvVars:     []string{"REGOLINT_POLICY"},
 				Destination: &cfg.PolicyFile,
 			},
 			&cli.StringFlag{
 				Name:        "output",
 				Aliases:     []string{"o"},
-				Usage:       "specify output file. If no policy file, output only parsed rego files. '-' means stdout",
+				Usage:       "specify output file. `-` means stdout",
 				EnvVars:     []string{"REGOLINT_OUTPUT"},
 				Destination: &cfg.OutputFile,
 				Value:       outputStdout,
