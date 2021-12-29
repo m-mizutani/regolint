@@ -82,7 +82,7 @@ func Run(args []string) error {
 					return err
 				}
 			} else {
-				raw, err := json.MarshalIndent(targets, "", "  ")
+				raw, err := json.MarshalIndent(input{Files: targets}, "", "  ")
 				if err != nil {
 					return goerr.Wrap(err)
 				}
