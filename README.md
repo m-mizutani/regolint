@@ -4,9 +4,35 @@ Lint Rego file with policy written by Rego
 
 ## Usage
 
+### Command Line
+
 ```bash
 $ regolint -p ./lint ./policy
 ./policy/auth.rego: package path and directory path is not matched
+```
+
+### GitHub Actions
+
+An image on GitHub Container Registry is available: `ghcr.io/m-mizutani/regolint:latest`.
+
+You can use the container image with such following GitHub Actions workflow.
+
+```yaml
+name: Lint
+
+on: [push]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout upstream repo
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: docker://ghcr.io/m-mizutani/regolint:latest
+        with:
+          args: "-p ./lint ./policy"
 ```
 
 ### Options
