@@ -1,0 +1,121 @@
+{
+  "files": [
+    {
+      "path": ["policies", "policy.rego"],
+      "rego": {
+        "package": {
+          "path": [
+            {
+              "type": "var",
+              "value": "data"
+            },
+            {
+              "type": "string",
+              "value": "regotest"
+            }
+          ]
+        },
+        "rules": [
+          {
+            "head": {
+              "name": "a",
+              "value": {
+                "type": "string",
+                "value": "top"
+              },
+              "assign": true
+            },
+            "body": [
+              {
+                "terms": {
+                  "type": "boolean",
+                  "value": true
+                },
+                "index": 0
+              }
+            ]
+          },
+          {
+            "head": {
+              "name": "allow",
+              "value": {
+                "type": "boolean",
+                "value": true
+              }
+            },
+            "body": [
+              {
+                "terms": {
+                  "symbols": [
+                    {
+                      "type": "var",
+                      "value": "c"
+                    }
+                  ]
+                },
+                "index": 0
+              },
+              {
+                "terms": [
+                  {
+                    "type": "ref",
+                    "value": [
+                      {
+                        "type": "var",
+                        "value": "assign"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "var",
+                    "value": "b"
+                  },
+                  {
+                    "type": "string",
+                    "value": "nested"
+                  }
+                ],
+                "index": 1
+              },
+              {
+                "terms": [
+                  {
+                    "type": "ref",
+                    "value": [
+                      {
+                        "type": "var",
+                        "value": "equal"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "ref",
+                    "value": [
+                      {
+                        "type": "var",
+                        "value": "input"
+                      },
+                      {
+                        "type": "string",
+                        "value": "data"
+                      },
+                      {
+                        "type": "var",
+                        "value": "c"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "var",
+                    "value": "a"
+                  }
+                ],
+                "index": 2
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

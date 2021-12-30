@@ -1,0 +1,98 @@
+{
+  "files": [
+    {
+      "path": ["policies", "policy.rego"],
+      "rego": {
+        "package": {
+          "path": [
+            {
+              "type": "var",
+              "value": "data"
+            },
+            {
+              "type": "string",
+              "value": "regotest"
+            }
+          ]
+        },
+        "rules": [
+          {
+            "head": {
+              "name": "allow",
+              "value": {
+                "type": "boolean",
+                "value": true
+              }
+            },
+            "body": [
+              {
+                "terms": {
+                  "symbols": [
+                    {
+                      "type": "var",
+                      "value": "a"
+                    }
+                  ]
+                },
+                "index": 0
+              },
+              {
+                "terms": [
+                  {
+                    "type": "ref",
+                    "value": [
+                      {
+                        "type": "var",
+                        "value": "equal"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "ref",
+                    "value": [
+                      {
+                        "type": "var",
+                        "value": "input"
+                      },
+                      {
+                        "type": "string",
+                        "value": "user"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "value": "blue"
+                  }
+                ],
+                "index": 0
+              },
+              {
+                "terms": [
+                  {
+                    "type": "ref",
+                    "value": [
+                      {
+                        "type": "var",
+                        "value": "eq"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "var",
+                    "value": "a"
+                  },
+                  {
+                    "type": "number",
+                    "value": 1
+                  }
+                ],
+                "index": 1
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
