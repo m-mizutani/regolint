@@ -28,6 +28,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push image
+        run: docker push ${{ env.GITHUB_IMAGE_LATEST }}
       - name: Rename image (commit ID)
         run: docker tag ${{ env.GITHUB_IMAGE_LATEST }} ${{ env.GITHUB_IMAGE_NAME }}
       - name: Push image
